@@ -15,12 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#####
-# You will need pysrt library to be able to run this script
+#################################################################################
+###### DEPENDENCIES
+# You will need pysrt library to be able to run this script.
 # sudo easy_install pysrt
 
+###### SHORT DESCRIPTION
+# This script will read an srt subtitle, it will remove empty/blank subtitle
+# lines that render the subtitles unusable in many smart media players,
+# and it will save the output in utf-8 encoding.
+#
+# The encoding of the input subtitle will be autoguessed, or it can be supplied
+# by the user in case the autoguessing fails.
+
 import pysrt
+import chardet
 import argparse
+import os
 
 VERSION="0.0.1"
 
@@ -54,7 +65,7 @@ parser.add_argument("-r", "--replace-original",
                     action="store_true",
                     default=False,
                     dest="fix_in_place",
-                    help="The cleaned srt file will overwrite the original file")
+                    help="The cleaned srt file will overwrite the original file. WARNING: Use this with care, especially if you let the script to autoguess the input character encoding!")
 
 opts = parser.parse_args()
 
@@ -68,13 +79,18 @@ else:
     if opts.fix_in_place:
         output_filename = filename
     else:
-        output_filename = "Cleaned-{}".format(filename)
+        output_filename = "{}/Cleaned-{}".format(os.path.dirname(filename), os.path.basename(filename))
 
 if opts.encoding:
-    subs = pysrt.open(filename, encoding=opts.encoding)
+    encoding = opts.encoding
 else:
-    subs = pysrt.open(filename)
+    content = open(filename, "r").read()
+    guess = chardet.detect(content)
+    encoding = guess['encoding']
+    detection_confidence = round(guess['confidence'], 3) * 100
+    print("Detected encoding '{}' with {}% confidence.".format(encoding, detection_confidence))
 
+subs = pysrt.open(filename, encoding=encoding)
 
 # Trim white spaces
 text_stripped = []
@@ -105,9 +121,13 @@ for i in range(len(subs)):
     subs[i].index = i + 1
 
 if not text_stripped and not to_delete:
-    print "Subtitle clean. No changes made."
+    print("Subtitle clean. No changes made.")
+    # If no subtitle changes were made, just convert the subtitle file to UTF-8
+    if(encoding.lower() != "utf8" and encoding.lower() != "utf-8"):
+        print("Converting to UTF-8 and saving file to {}".format(output_filename))
+        subs.save(output_filename, encoding='utf-8')
 else:
-    print "Index of subtitles deleted: {}".format([i + 1 for i in to_delete])
-    print "Index of subtitles trimmed: {}".format(text_stripped)
-    print "Saving output to '{}'".format(output_filename)
+    print("Index of subtitles deleted: {}".format([i + 1 for i in to_delete]))
+    print("Index of subtitles trimmed: {}".format(text_stripped))
+    print("Saving UTF-8 encoded file to '{}'".format(output_filename))
     subs.save(output_filename, encoding='utf-8')
