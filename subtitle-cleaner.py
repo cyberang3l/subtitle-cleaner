@@ -79,7 +79,7 @@ else:
     if opts.fix_in_place:
         output_filename = filename
     else:
-        output_filename = "{}/Cleaned-{}".format(os.path.dirname(filename), os.path.basename(filename))
+        output_filename = os.path.join(os.path.dirname(filename), "Cleaned-{}".format(os.path.basename(filename)))
 
 if opts.encoding:
     encoding = opts.encoding
