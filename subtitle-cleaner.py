@@ -79,7 +79,7 @@ else:
     if opts.fix_in_place:
         output_filename = filename
     else:
-        output_filename = os.path.join(os.path.dirname(filename), "Cleaned-{}".format(os.path.basename(filename)))
+        output_filename = os.path.join(os.path.dirname(filename), "Cleaned-{0}".format(os.path.basename(filename)))
 
 if opts.encoding:
     encoding = opts.encoding
@@ -88,7 +88,7 @@ else:
     guess = chardet.detect(content)
     encoding = guess['encoding']
     detection_confidence = round(guess['confidence'], 3) * 100
-    print("Detected encoding '{}' with {}% confidence.".format(encoding, detection_confidence))
+    print("Detected encoding '{0}' with {1}% confidence.".format(encoding, detection_confidence))
 
 subs = pysrt.open(filename, encoding=encoding)
 
@@ -124,10 +124,10 @@ if not text_stripped and not to_delete:
     print("Subtitle clean. No changes made.")
     # If no subtitle changes were made, just convert the subtitle file to UTF-8
     if(encoding.lower() != "utf8" and encoding.lower() != "utf-8"):
-        print("Converting to UTF-8 and saving file to {}".format(output_filename))
+        print("Converting to UTF-8 and saving file to {0}".format(output_filename))
         subs.save(output_filename, encoding='utf-8')
 else:
-    print("Index of subtitles deleted: {}".format([i + 1 for i in to_delete]))
-    print("Index of subtitles trimmed: {}".format(text_stripped))
-    print("Saving UTF-8 encoded file to '{}'".format(output_filename))
+    print("Index of subtitles deleted: {0}".format([i + 1 for i in to_delete]))
+    print("Index of subtitles trimmed: {0}".format(text_stripped))
+    print("Saving UTF-8 encoded file to '{0}'".format(output_filename))
     subs.save(output_filename, encoding='utf-8')
