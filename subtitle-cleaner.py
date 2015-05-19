@@ -33,11 +33,12 @@ import chardet
 import argparse
 import os
 
+PROGRAM_NAME="Subtitle Cleaner"
 VERSION="0.0.1"
 
-parser = argparse.ArgumentParser(description="{} version {}. This simple script will remove blank"
+parser = argparse.ArgumentParser(description="{0} version {1}. This simple script will remove blank"
                                              "subtitles and trim leading and trailing whitespaces.".format(
-                                             "Subtitle Cleaner", VERSION
+                                             PROGRAM_NAME, VERSION
                                              )
                                 )
 
