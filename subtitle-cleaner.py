@@ -126,7 +126,8 @@ if not text_stripped and not to_delete:
     # If no subtitle changes were made, just convert the subtitle file to UTF-8
     if(encoding.lower() != "utf8" and encoding.lower() != "utf-8"):
         print("Converting to UTF-8 and saving file to {0}".format(output_filename))
-        subs.save(output_filename, encoding='utf-8')
+
+    subs.save(output_filename, encoding='utf-8')
 else:
     print("Index of subtitles deleted: {0}".format([i + 1 for i in to_delete]))
     print("Index of subtitles trimmed: {0}".format(text_stripped))
