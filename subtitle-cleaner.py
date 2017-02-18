@@ -85,7 +85,7 @@ else:
 if opts.encoding:
     encoding = opts.encoding
 else:
-    content = open(filename, "r").read()
+    content = open(filename, "rb").read()
     guess = chardet.detect(content)
     encoding = guess['encoding']
     detection_confidence = round(guess['confidence'], 3) * 100
